@@ -1,0 +1,13 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Purchase Success</title>
+    </head>
+    <body>
+        <h1>Purchase Successful</h1>
+        <p>Product ID: <span th:text="${response.productId}"></span></p>
+        <p>Final Price: <span th:text="${response.finalPrice}"></span></p>
+        <p>Value Type: <span th:text="${response.valueType}"></span></p>
+        <p>Value: <span th:text="${response.value}"></span></p>
+    </body>
+</html>

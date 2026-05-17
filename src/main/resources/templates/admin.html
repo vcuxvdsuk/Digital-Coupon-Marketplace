@@ -1,0 +1,57 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Admin</title>
+    </head>
+    <body>
+        <h1>Admin Panel</h1>
+        <h2>Create Coupon</h2>
+        <form
+            th:action="@{/admin/create}"
+            th:object="${createCouponRequest}"
+            method="post"
+        >
+            Name: <input type="text" th:field="*{name}" required />
+            <br />
+            Description:
+            <textarea th:field="*{description}"></textarea>
+            <br />
+            Image URL:
+            <input type="text" th:field="*{imageUrl}" required />
+            <br />
+            Cost Price:
+            <input type="number" step="0.01" th:field="*{costPrice}" required />
+            <br />
+            Margin Percentage:
+            <input
+                type="number"
+                step="0.01"
+                th:field="*{marginPercentage}"
+                required
+            />
+            <br />
+            Value Type:
+            <select th:field="*{valueType}">
+                <option
+                    th:each="type : ${T(couponmarketplace.entity.ValueType).values()}"
+                    th:value="${type}"
+                    th:text="${type}"
+                ></option>
+            </select>
+            <br />
+            Value:
+            <input type="text" th:field="*{value}" required />
+            <br />
+            <button type="submit">Create</button>
+        </form>
+        <h2>Available Coupons</h2>
+        <div th:each="product : ${products}">
+            <h3 th:text="${product.name}"></h3>
+            <p th:text="${product.description}"></p>
+            <p>
+                Price:
+                <span th:text="${product.minimumSellPrice}"></span>
+            </p>
+        </div>
+    </body>
+</html>
