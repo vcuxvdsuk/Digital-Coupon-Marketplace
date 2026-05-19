@@ -12,6 +12,7 @@ import couponmarketplace.dto.CreateResellerResponse;
 import couponmarketplace.dto.ResellerLoginRequest;
 import couponmarketplace.entity.Reseller;
 import couponmarketplace.repository.ResellerRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ResellerService {
@@ -22,6 +23,7 @@ public class ResellerService {
         this.resellerRepository = resellerRepository;
     }
 
+    @Transactional
     public CreateResellerResponse createReseller(CreateResellerRequest request) {
         Optional<Reseller> existing = resellerRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
@@ -38,6 +40,7 @@ public class ResellerService {
         return new CreateResellerResponse(saved.getApiToken());
     }
 
+    @Transactional
     public CreateResellerResponse loginReseller(ResellerLoginRequest request) {
         Reseller reseller = resellerRepository
                 .findByEmail(request.getEmail())

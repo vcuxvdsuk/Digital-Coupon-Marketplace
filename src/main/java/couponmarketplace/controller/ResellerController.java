@@ -11,6 +11,7 @@ import couponmarketplace.dto.ResellerLoginRequest;
 import couponmarketplace.service.ResellerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/reseller")
@@ -25,17 +26,13 @@ public class ResellerController {
 
     @Operation(summary = "Register reseller", description = "Create a new reseller account and return an API token.")
     @PostMapping("/register")
-    public CreateResellerResponse register(@RequestBody CreateResellerRequest request) {
-        CreateResellerResponse response = resellerService.createReseller(request);
-        return response;
+    public CreateResellerResponse register(@Valid @RequestBody CreateResellerRequest request) {
+        return resellerService.createReseller(request);
     }
 
     @Operation(summary = "Login reseller", description = "Authenticate a reseller and return the existing API token.")
     @PostMapping("/login")
-    public CreateResellerResponse login(@RequestBody ResellerLoginRequest request) {
-        System.out.println(request);
-        CreateResellerResponse response = resellerService.loginReseller(request);
-        System.out.println(response);
-        return response;
+    public CreateResellerResponse login(@Valid @RequestBody ResellerLoginRequest request) {
+        return resellerService.loginReseller(request);
     }
 }

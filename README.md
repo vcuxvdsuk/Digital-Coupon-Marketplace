@@ -5,7 +5,7 @@
 This is a backend system for a digital coupon marketplace with the following features:
 
 - Product management (Admin)
-- Strict pricing rules enforcement
+- pricing rules enforcement
 - Secure reseller REST API
 - Minimal frontend for admin and customer
 - Fully Dockerized
@@ -29,7 +29,7 @@ This is a backend system for a digital coupon marketplace with the following fea
 To handle concurrent purchases:
 
 1. Use @Transactional on the purchase method.
-2. Use pessimistic locking (@Lock(LockModeType.PESSIMISTIC_WRITE)) on the repository findById.
+2. Use pessimistic locking (@Lock(LockModeType.PESSIMISTIC_WRITE)) on the repository.
 3. Check if sold, if not, mark as sold and save.
 
 This ensures that if two requests come simultaneously, one will wait for the lock, then see it's sold.
@@ -47,35 +47,32 @@ This ensures that if two requests come simultaneously, one will wait for the loc
 
 - Java 17
 - Maven
-- PostgreSQL (or use Docker)
+- docker
 
 ### Steps
 
-1. Clone the repository.
-2. Set up PostgreSQL database:
-    - Create database `couponmarketplace`
-    - User: postgres, password: password
-3. Run `mvn clean install`
-4. Run `java -jar target/coupon-marketplace-0.0.1-SNAPSHOT.jar`
-5. Access:
-    - Frontend: http://localhost:8080/
-    - Admin: http://localhost:8080/admin
-    - Reseller API: http://localhost:8080/api/v1/products (with Bearer token)
+1. Run `mvn clean install`
+2. `docker-compose up --build`
 
-### Using Docker
-
-1. `docker-compose up --build`
-2. Access same URLs.
+3. Access:
+    - Customer Frontend: http://localhost:8080/
+    - Admin Frontend: http://localhost:8080/admin
+    - Reseller API: http://localhost:8080/swagger-ui/index.html
 
 ## API Documentation
 
+### Reseller Auth
+
+- POST /api/v1/reseller/register - Register a reseller and receive an API token
+- POST /api/v1/reseller/login - Authenticate and receive an existing API token
+
 ### Reseller API
+
+need -> Headers: Authorization: Bearer <token from /api/v1/reseller/login>
 
 - GET /api/v1/products - List available products
 - GET /api/v1/products/{id} - Get product by ID
 - POST /api/v1/products/{id}/purchase - Purchase product
-
-Headers: Authorization: Bearer static-token-123
 
 ### Admin API
 
@@ -85,8 +82,9 @@ Headers: Authorization: Bearer static-token-123
 ## Tradeoffs
 
 - Used Thymeleaf for simplicity instead of a full JS framework.
-- Static token for auth, easy to implement but not secure for production.
-- No update/delete for products in admin, can be added.
 - No pagination, for small scale.
 
-This implementation focuses on backend logic and API quality as per the assignment.
+## ToDo
+
+- error handling improvement
+- frontend expension

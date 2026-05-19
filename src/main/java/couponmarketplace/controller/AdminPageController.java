@@ -2,6 +2,7 @@ package couponmarketplace.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import couponmarketplace.dto.CreateCouponRequest;
 import couponmarketplace.service.CouponService;
 import couponmarketplace.service.ProductService;
+import jakarta.validation.Valid;
 
 @Controller
 public class AdminPageController {
@@ -22,14 +24,21 @@ public class AdminPageController {
     }
 
     @PostMapping("/admin/create")
-    public String adminPage(
-            @ModelAttribute CreateCouponRequest createCouponRequest,
+    public String createCoupon(
+            @Valid @ModelAttribute CreateCouponRequest request,
+            BindingResult bindingResult,
             Model model) {
 
-        couponService.createCoupon(createCouponRequest);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("products", productService.getAllProducts());
+            return "admin";
+        }
+
+        couponService.createCoupon(request);
+
         model.addAttribute("createCouponRequest", new CreateCouponRequest());
         model.addAttribute("products", productService.getAllProducts());
-        return "admin";
+        return "redirect:/admin";
     }
 
     @GetMapping("/admin")

@@ -13,7 +13,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Entity
 public class Coupon extends Product {
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 14, scale = 2)
     @NotNull
     @PositiveOrZero
     private BigDecimal costPrice;
@@ -30,13 +30,14 @@ public class Coupon extends Product {
 
     @NotNull
     @PositiveOrZero
+    @Column(nullable = false, precision = 14, scale = 2)
     private BigDecimal minimumSellPrice;
 
     @Column(nullable = false)
     @NotNull
     private String valueType;
 
-    @Column(nullable = false)
+    @Column(name = "coupon_value", nullable = false)
     @NotNull
     private String value;
 

@@ -16,8 +16,10 @@ public class ProductMapper {
         dto.setImageUrl(product.getImageUrl());
         if (product instanceof Coupon coupon) {
             dto.setPrice(coupon.getMinimumSellPrice());
+            dto.setSold(coupon.isSold());
         } else {
             dto.setPrice(BigDecimal.ZERO);
+            dto.setSold(false);
         }
         return dto;
     }

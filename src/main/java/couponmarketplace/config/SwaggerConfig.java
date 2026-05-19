@@ -19,9 +19,9 @@ public class SwaggerConfig {
                                 .addSecuritySchemes(
                                         "api-key",
                                         new SecurityScheme()
-                                                .type(SecurityScheme.Type.APIKEY)
-                                                .in(SecurityScheme.In.HEADER)
-                                                .name("X-API-KEY")
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
                                 )
                 );
     }

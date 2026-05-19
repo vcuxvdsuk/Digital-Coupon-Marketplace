@@ -18,9 +18,10 @@ import couponmarketplace.service.PurchaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/reseller/products")
+@RequestMapping("/api/v1/products")
 @Tag(name = "Reseller Products", description = "Endpoints for resellers to browse and purchase products.")
 public class ResellerProductController {
 
@@ -32,24 +33,27 @@ public class ResellerProductController {
         this.purchaseService = purchaseService;
     }
 
-    @Operation(summary = "List reseller products", description = "Retrieve available products for reseller purchase.")
+    @Operation(summary = "List reseller products",
+            description = "Retrieve available products for reseller purchase.")
     @SecurityRequirement(name = "api-key")
     @GetMapping
     public List<ProductDto> getAllProducts() {
-        return productService.getAllProducts();
+        return productService.getAllAvailableProducts();
     }
 
-    @Operation(summary = "Get reseller product", description = "Retrieve details for a single reseller product by ID.")
+    @Operation(summary = "Get reseller product",
+            description = "Retrieve details for a single reseller product by ID.")
     @SecurityRequirement(name = "api-key")
     @GetMapping("/{productId}")
     public ProductDto getProductById(@PathVariable UUID productId) {
         return productService.getProductById(productId);
     }
 
-    @Operation(summary = "Reseller purchase", description = "Purchase a product as a reseller using the provided payload.")
+    @Operation(summary = "Reseller purchase",
+            description = "Purchase a product as a reseller using the provided payload.")
     @SecurityRequirement(name = "api-key")
     @PostMapping("/{productId}/purchase")
-    public PurchaseResponse purchaseProduct(@PathVariable UUID productId, @RequestBody PurchaseRequest request) {
+    public PurchaseResponse purchaseProduct(@PathVariable UUID productId, @Valid @RequestBody PurchaseRequest request) {
         return purchaseService.purchaseCoupon(productId, request);
     }
 }

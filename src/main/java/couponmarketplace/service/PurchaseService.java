@@ -34,15 +34,18 @@ public class PurchaseService {
             throw new ProductAlreadySoldException("Product already sold");
         }
 
-        BigDecimal minimumPrice = pricingService.getMinimumSellPrice(coupon);
-        if (request.getOffer().compareTo(minimumPrice) < 0) {
-            throw new ResellerPriceTooLowException("Reseller price is below minimum sell price");
+        if (request == null || request.getResellerPrice() == null) {
+            throw new IllegalArgumentException("reseller_price is required");
         }
 
+        BigDecimal minimumPrice = pricingService.getMinimumSellPrice(coupon);
+        if (request.getResellerPrice().compareTo(minimumPrice) < 0) {
+            throw new ResellerPriceTooLowException("Reseller price is below minimum sell price");
+        }
         coupon.setSold(true);
         couponRepository.save(coupon);
 
-        return buildPurchaseResponse(coupon, request.getOffer());
+        return buildPurchaseResponse(coupon, request.getResellerPrice());
     }
 
     @Transactional

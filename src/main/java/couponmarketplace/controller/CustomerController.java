@@ -25,7 +25,7 @@ public class CustomerController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("products", productService.getAllAvilbleProducts());
+        model.addAttribute("products", productService.getAllAvailableProducts());
         return "customer";
     }
 

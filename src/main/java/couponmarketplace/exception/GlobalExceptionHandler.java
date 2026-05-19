@@ -1,12 +1,17 @@
 package couponmarketplace.exception;
 
+import java.util.stream.Collectors;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import couponmarketplace.dto.ErrorResponse;
-
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -41,5 +46,50 @@ public class GlobalExceptionHandler {
         error.setErrorCode("UNAUTHORIZED");
         error.setMessage(e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationFailure(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode("INVALID_REQUEST");
+        error.setMessage(message);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleMalformedJson(HttpMessageNotReadableException e) {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode("INVALID_JSON");
+        error.setMessage("Request body is malformed or contains invalid values");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException e) {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode("DATA_INTEGRITY_VIOLATION");
+        String msg = e.getMostSpecificCause() != null ? e.getMostSpecificCause().getMessage() : e.getMessage();
+        error.setMessage(msg);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatusException(ResponseStatusException e) {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode("INVALID_REQUEST");
+        error.setMessage(e.getReason() != null ? e.getReason() : "Invalid request");
+        return new ResponseEntity<>(error, e.getStatusCode());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException e) {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode("INVALID_REQUEST");
+        error.setMessage(e.getMessage() != null ? e.getMessage() : "Invalid request");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

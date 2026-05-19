@@ -1,12 +1,10 @@
 package couponmarketplace.security;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import couponmarketplace.entity.Reseller;
 import couponmarketplace.exception.UnauthorizedException;
 import couponmarketplace.service.ResellerService;
 import jakarta.servlet.FilterChain;
@@ -35,27 +33,15 @@ public class ResellerAuthFilter extends OncePerRequestFilter {
         if (path.startsWith("/api/v1/")
                 && !path.equals("/api/v1/reseller/register")
                 && !path.equals("/api/v1/reseller/login")) {
-            String token = request.getHeader("X-API-KEY");
-
-            if (token == null || token.isBlank()) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Missing API key");
-                return;
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                throw new UnauthorizedException("Missing or invalid Authorization header");
             }
-
-            Optional<Reseller> reseller
-                    = resellerService.findByApiKey(token);
-
-            if (reseller.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid API key");
-                return;
-            }
+            String token = authHeader.substring(7);
 
             if (!resellerService.isValidToken(token)) {
                 throw new UnauthorizedException("Missing or invalid API token");
             }
-
         }
         filterChain.doFilter(request, response);
     }

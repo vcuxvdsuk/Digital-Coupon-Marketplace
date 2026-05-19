@@ -3,7 +3,6 @@ package couponmarketplace.controller;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,20 +21,22 @@ import couponmarketplace.service.ProductService;
 import couponmarketplace.service.PurchaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
 @Tag(name = "Admin API", description = "Administrative endpoints for managing coupons and purchases.")
 public class AdminAPIController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final CouponService couponService;
+    private final PurchaseService purchaseService;
 
-    @Autowired
-    private CouponService couponService;
-
-    @Autowired
-    private PurchaseService purchaseService;
+    public AdminAPIController(ProductService productService, CouponService couponService, PurchaseService purchaseService) {
+        this.productService = productService;
+        this.couponService = couponService;
+        this.purchaseService = purchaseService;
+    }
 
     @Operation(summary = "List all products",
             description = "Returns all products for the admin catalog.")
@@ -47,7 +48,7 @@ public class AdminAPIController {
     @Operation(summary = "Create a new product",
             description = "Creates a new coupon-backed product from the provided payload.")
     @PostMapping("/products/create")
-    public ProductDto createProduct(@RequestBody CreateCouponRequest request) {
+    public ProductDto createProduct(@Valid @RequestBody CreateCouponRequest request) {
         return productService.getProductById(couponService.createCoupon(request).getId());
     }
 
@@ -61,7 +62,7 @@ public class AdminAPIController {
     @Operation(summary = "Purchase a product",
             description = "Executes a purchase request for the specified product ID.")
     @PostMapping("/products/{id}/purchase")
-    public PurchaseResponse purchaseProduct(@PathVariable UUID id, @RequestBody PurchaseRequest request) {
+    public PurchaseResponse purchaseProduct(@PathVariable UUID id, @Valid @RequestBody PurchaseRequest request) {
         return purchaseService.purchaseCoupon(id, request);
     }
 
@@ -75,7 +76,7 @@ public class AdminAPIController {
     @Operation(summary = "Update a product",
             description = "Updates product data for the specified product ID.")
     @PutMapping("/products/{id}/update")
-    public ProductDto updateProduct(@PathVariable UUID id, @RequestBody CreateCouponRequest request) {
+    public ProductDto updateProduct(@PathVariable UUID id, @Valid @RequestBody CreateCouponRequest request) {
         return productService.getProductById(couponService.updateCoupon(id, request).getId());
     }
 

@@ -11,6 +11,10 @@ import couponmarketplace.entity.Coupon;
 public class PricingService {
 
     public BigDecimal getMinimumSellPrice(Coupon coupon) {
+        if (coupon == null || coupon.getCostPrice() == null || coupon.getMarginPercentage() == null) {
+            throw new IllegalArgumentException("Coupon pricing data is incomplete");
+        }
+
         return coupon.getCostPrice().multiply(
                 BigDecimal.ONE.add(
                         coupon.getMarginPercentage().divide(
