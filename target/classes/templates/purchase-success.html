@@ -1,13 +1,56 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Purchase Success</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Purchase Success | Coupon Marketplace</title>
+        <link rel="stylesheet" href="/styles.css" />
     </head>
     <body>
-        <h1>Purchase Successful</h1>
-        <p>Product ID: <span th:text="${response.productId}"></span></p>
-        <p>Final Price: <span th:text="${response.finalPrice}"></span></p>
-        <p>Value Type: <span th:text="${response.valueType}"></span></p>
-        <p>Value: <span th:text="${response.value}"></span></p>
+        <header class="site-header">
+            <div class="brand"><a th:href="@{/}">Coupon Marketplace</a></div>
+            <nav>
+                <a th:href="@{/}">Shop</a>
+                <a th:href="@{/admin}">Admin</a>
+            </nav>
+        </header>
+
+        <main class="page-content result-page">
+            <section class="result-card success-card">
+                <h1>Purchase Successful</h1>
+                <p>Your coupon order was completed successfully.</p>
+                <div class="result-details">
+                    <div>
+                        <strong>Product ID:</strong>
+                        <span th:text="${response.productId}"></span>
+                    </div>
+                    <div>
+                        <strong>Final Price:</strong>
+                        <span th:text="${response.finalPrice}"></span>
+                    </div>
+                    <div>
+                        <strong>Value Type:</strong>
+                        <span th:text="${response.valueType}"></span>
+                    </div>
+                    <div>
+                        <strong>Value:</strong>
+
+                        <div th:switch="${response.valueType}">
+                            <span
+                                th:case="'STRING'"
+                                th:text="${response.value}"
+                            ></span>
+
+                            <img
+                                th:case="'IMAGE'"
+                                th:src="${response.value}"
+                                style="max-width: 200px"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <a th:href="@{/}" class="secondary-button">Return to Shop</a>
+            </section>
+        </main>
     </body>
 </html>

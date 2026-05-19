@@ -9,22 +9,16 @@ import couponmarketplace.entity.Coupon;
 
 @Service
 public class PricingService {
-    public BigDecimal calculateMinimumPrice(Coupon coupon) {
-        return coupon.getCostPrice()
-                .multiply(BigDecimal.ONE.add(
-                    coupon.getMarginPercentage().divide(BigDecimal.valueOf(100))
-                ));
-    }
 
     public BigDecimal getMinimumSellPrice(Coupon coupon) {
         return coupon.getCostPrice().multiply(
-            BigDecimal.ONE.add(
-                coupon.getMarginPercentage().divide(
-                    BigDecimal.valueOf(100),
-                    4,
-                    RoundingMode.HALF_UP
+                BigDecimal.ONE.add(
+                        coupon.getMarginPercentage().divide(
+                                BigDecimal.valueOf(100),
+                                4,
+                                RoundingMode.HALF_UP
+                        )
                 )
-            )
         ).setScale(2, RoundingMode.HALF_UP);
     }
 }

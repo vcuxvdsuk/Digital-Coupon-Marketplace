@@ -17,4 +17,5 @@ public interface CouponRepository extends JpaRepository<Coupon, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Override
     Optional<Coupon> findById(UUID id);
+
 }

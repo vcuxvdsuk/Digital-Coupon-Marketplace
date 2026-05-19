@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 import couponmarketplace.security.ResellerAuthFilter;
 
-
 @Configuration
 public class WebConfig {
 
@@ -14,8 +13,8 @@ public class WebConfig {
     public FilterRegistrationBean<ResellerAuthFilter> resellerAuthFilterRegistration(
             ResellerAuthFilter filter) {
 
-        FilterRegistrationBean<ResellerAuthFilter> registration =
-                new FilterRegistrationBean<>();
+        FilterRegistrationBean<ResellerAuthFilter> registration
+                = new FilterRegistrationBean<>();
 
         registration.setFilter(filter);
         registration.addUrlPatterns("/api/v1/*");

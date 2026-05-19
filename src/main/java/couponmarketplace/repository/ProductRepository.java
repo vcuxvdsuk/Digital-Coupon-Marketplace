@@ -14,4 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Override
     Optional<Product> findById(UUID id);
+
 }

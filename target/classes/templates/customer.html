@@ -1,18 +1,55 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Coupon Marketplace</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Shop | Coupon Marketplace</title>
+        <link rel="stylesheet" href="/styles.css" />
     </head>
     <body>
-        <h1>Available Coupons</h1>
-        <div th:each="product : ${products}">
-            <h2 th:text="${product.name}"></h2>
-            <p th:text="${product.description}"></p>
-            <img th:src="${product.imageUrl}" alt="Image" width="100" />
-            <p>Price: <span th:text="${product.minimumSellPrice}"></span></p>
-            <form th:action="@{'/purchase/' + ${product.id}}" method="post">
-                <button type="submit">Purchase</button>
-            </form>
-        </div>
+        <header class="site-header">
+            <div class="brand"><a th:href="@{/}">Coupon Marketplace</a></div>
+            <nav>
+                <a th:href="@{/}">Shop</a>
+                <a th:href="@{/admin}">Admin</a>
+            </nav>
+        </header>
+
+        <main class="page-content shop-page">
+            <section class="hero-card">
+                <h1>Available Coupons</h1>
+                <p>
+                    Browse deals with transparent pricing and instant checkout.
+                </p>
+            </section>
+
+            <div class="product-grid">
+                <div class="product-card" th:each="product : ${products}">
+                    <img th:src="${product.imageUrl}" alt="Coupon image" />
+                    <div class="product-info">
+                        <h2 th:text="${product.name}"></h2>
+                        <h3
+                            th:text="${product.id != null ? product.id : 'N/A'}"
+                        ></h3>
+                        <p
+                            class="description"
+                            th:text="${product.description}"
+                        ></p>
+                        <p class="price">
+                            Price:
+                            <span th:text="${product.price}"></span>
+                        </p>
+                        <form
+                            th:action="@{'/purchase/' + ${product.id}}"
+                            method="post"
+                        >
+                            <button type="submit" class="primary-button">
+                                Purchase
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
     </body>
 </html>

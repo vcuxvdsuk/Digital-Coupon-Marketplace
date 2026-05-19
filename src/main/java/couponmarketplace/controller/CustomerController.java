@@ -2,34 +2,37 @@ package couponmarketplace.controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import couponmarketplace.dto.CreateCouponRequest;
 import couponmarketplace.dto.PurchaseResponse;
-import couponmarketplace.service.CouponService;
+import couponmarketplace.service.ProductService;
+import couponmarketplace.service.PurchaseService;
 
 @Controller
 public class CustomerController {
 
-    @Autowired
-    private CouponService couponService;
+    private final ProductService productService;
+    private final PurchaseService purchaseService;
+
+    public CustomerController(ProductService productService, PurchaseService purchaseService) {
+        this.productService = productService;
+        this.purchaseService = purchaseService;
+    }
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("products", couponService.getAvailableCoupons());
+        model.addAttribute("products", productService.getAllAvilbleProducts());
         return "customer";
     }
 
     @PostMapping("/purchase/{id}")
     public String purchase(@PathVariable UUID id, Model model) {
         try {
-            PurchaseResponse response = couponService.purchaseCouponDirect(id);
+            PurchaseResponse response = purchaseService.purchaseCouponDirect(id);
             model.addAttribute("response", response);
             return "purchase-success";
         } catch (Exception e) {
@@ -38,9 +41,10 @@ public class CustomerController {
         }
     }
 
+    /*
     @GetMapping("/admin")
     public String admin(Model model) {
-        model.addAttribute("products", couponService.getAvailableCoupons());
+        model.addAttribute("products", productService.getAllProducts().stream());
         model.addAttribute("createCouponRequest", new CreateCouponRequest());
         return "admin";
     }
@@ -50,4 +54,5 @@ public class CustomerController {
         couponService.createCoupon(request);
         return "redirect:/admin";
     }
+     */
 }

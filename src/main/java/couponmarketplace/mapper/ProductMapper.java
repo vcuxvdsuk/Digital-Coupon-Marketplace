@@ -1,8 +1,10 @@
 package couponmarketplace.mapper;
 
-import couponmarketplace.dto.ProductDto;
-import couponmarketplace.entity.Product;
+import java.math.BigDecimal;
 
+import couponmarketplace.dto.ProductDto;
+import couponmarketplace.entity.Coupon;
+import couponmarketplace.entity.Product;
 
 public class ProductMapper {
 
@@ -12,6 +14,11 @@ public class ProductMapper {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setImageUrl(product.getImageUrl());
+        if (product instanceof Coupon coupon) {
+            dto.setPrice(coupon.getMinimumSellPrice());
+        } else {
+            dto.setPrice(BigDecimal.ZERO);
+        }
         return dto;
     }
 }
